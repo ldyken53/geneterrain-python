@@ -17,34 +17,6 @@ N = 2000
 
 # %% Shader and data
 
-shader_source = """
-
-[[block]]
-struct DataContainer {
-    data: [[stride(4)]] array<i32>;
-};
-[[block]] struct Uniforms {
-    test : i32;
-};
-
-[[group(0), binding(0)]]
-var<storage,read> data1: DataContainer;
-
-[[group(0), binding(1)]]
-var<storage,read_write> data2: DataContainer;
-[[group(0), binding(2)]] var<uniform> uniforms : Uniforms;
-[[group(0), binding(3)]] var<storage, read_write> range : Range;
-
-
-[[stage(compute), workgroup_size(1)]]
-fn main([[builtin(global_invocation_id)]] index: vec3<u32>) {
-    let i: u32 = index.x;
-    data2.data[i] = data1.data[i] + uniforms.test;
-    atomicMin(&range.x, data2.data[i]);
-    atomicMax(&range.y, data2.data[i]);
-}
-"""
-
 terrain_source = """
 // compute terrain wgsl
 struct Node {
